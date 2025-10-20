@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aimers Saarthi - AI Doubt Solver</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #212529;
+            --primary-hover: #343a40;
+            --accent: #27ae60;
+            --bg: #f7f8fa;
+            --white: #ffffff;
+            --text: #2c3e50;
+            --text-secondary: #555;
+            --border: #e2e8f0;
+            --shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            min-height: 90vh;
+            background: var(--white);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .app-header img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+        }
+
+        .app-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .subject-section {
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid var(--border);
+            background: var(--white);
+        }
+
+        .section-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+
+        .subject-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .subject-chip {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background-color: #fafafa;
+            transition: all 0.25s ease;
+        }
+
+        .subject-chip:hover {
+            background-color: #f0f0f0;
+        }
+
+        .subject-chip.active {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            background-color: #fafafa;
+            padding: 1.5rem;
+        }
+
+        .message {
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+
+        .message-ai {
+            flex-direction: row;
+        }
+
+        .message-user {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+
+        .avatar-ai {
+            background: #e67e22;
+            color: white;
+        }
+
+        .avatar-user {
+            background: #4a7c59;
+            color: white;
+        }
+
+        .message-bubble {
+            max-width: 75%;
+            padding: 0.9rem 1.1rem;
+            border-radius: 15px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .message-ai .message-bubble {
+            background: white;
+        }
+
+        .message-user .message-bubble {
+            background: var(--primary);
+            color: white;
+        }
+
+        .message-image {
+            max-width: 200px;
+            border-radius: 10px;
+            margin-top: 0.5rem;
+        }
+
+        .input-section {
+            padding: 1rem 1.2rem;
+            background-color: var(--white);
+            border-top: 1px solid var(--border);
+        }
+
+        .image-preview-container {
+            display: none;
+            margin-bottom: 0.75rem;
+            position: relative;
+        }
+
+        .image-preview-container.show {
+            display: block;
+        }
+
+        .image-preview {
+            max-width: 120px;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .remove-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            width: 26px;
+            height: 26px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+        }
+
+        .input-container {
+            flex: 1;
+            position: relative;
+        }
+
+        .chat-input {
+            width: 100%;
+            padding: 0.8rem 2.8rem 0.8rem 1rem; /* space on right for 📎 */
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            font-size: 0.95rem;
+            resize: none;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: inherit;
+            background-color: #fff;
+        }
+
+        .chat-input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.15);
+        }
+
+        .attach-button {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            border: none;
+            background: none;
+            color: #777;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .attach-button:hover {
+            color: var(--accent);
+        }
+
+        .send-button {
+            width: 44px;
+            height: 44px;
+            border: none;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .send-button:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .welcome-screen {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            padding: 2rem 1rem;
+        }
+
+        .welcome-screen .welcome-icon {
+            font-size: 3rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .feature-list {
+            margin-top: 1.2rem;
+            text-align: left;
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.6rem;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        @media (min-width: 768px) {
+            .app-container {
+                border-radius: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <a href="/" style="color:#e2e8f0; text-underline-offset: none;"<p><</p></a>
+            <img src="static/logo.jpeg" alt="Logo">
+            <span class="app-title">Aimers Saarthi</span>
+        </div>
+
+        <div class="subject-section">
+            <div class="section-label">Select Subject</div>
+            <div class="subject-chips">
+                <div class="subject-chip" data-subject="Mathematics">🔢 Math</div>
+                <div class="subject-chip" data-subject="Physics">⚛️ Physics</div>
+                <div class="subject-chip" data-subject="Chemistry">🧪 Chemistry</div>
+                <div class="subject-chip" data-subject="Biology">🧬 Biology</div>
+                <div class="subject-chip" data-subject="Hindi">📖 Hindi</div>
+                <div class="subject-chip" data-subject="English">📝 English</div>
+                <div class="subject-chip" data-subject="Computer">💻 Computer</div>
+            </div>
+        </div>
+
+        <div class="chat-area" id="chatArea">
+            <div class="welcome-screen" id="welcomeScreen">
+                <div class="welcome-icon">👋</div>
+                <div>Welcome to <strong>Aimers Doubt Saarthi</strong>!<br>Your AI study companion for all subjects.</div>
+                <div class="feature-list">
+                    <div class="feature-item">✍️ Type or upload images of questions</div>
+                    <div class="feature-item">🤖 Get instant AI-powered answers</div>
+                    <div class="feature-item">📚 Step-by-step explanations</div>
+                    <div class="feature-item">🌐 Supports Hindi & English</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="input-section">
+            <div class="image-preview-container" id="imagePreviewContainer">
+                <img id="imagePreview" class="image-preview" src="" alt="Preview">
+                <button class="remove-image" id="removeImage">×</button>
+            </div>
+            <div class="input-wrapper">
+                <div class="input-container">
+                    <textarea class="chat-input" id="questionInput" placeholder="Ask your question..." rows="1" disabled></textarea>
+                    <button class="attach-button" id="attachButton">📎</button>
+                    <input style="display: none;" type="file" id="fileInput" class="file-input" accept="image/png,image/jpeg,image/jpg,image/webp">
+                </div>
+                <button class="send-button" id="sendButton" disabled>➤</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'AIzaSyB0jqyNtivhIsZYQGV9dc2wp1rOXNArgsY';
+        const API_ENDPOINT = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent';
+
+        let selectedSubject = '';
+        let uploadedImage = null;
+        let uploadedImageBase64 = null;
+
+        const subjectChips = document.querySelectorAll('.subject-chip');
+        const chatArea = document.getElementById('chatArea');
+        const welcomeScreen = document.getElementById('welcomeScreen');
+        const questionInput = document.getElementById('questionInput');
+        const sendButton = document.getElementById('sendButton');
+        const attachButton = document.getElementById('attachButton');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const removeImageBtn = document.getElementById('removeImage');
+
+        subjectChips.forEach(chip => {
+            chip.addEventListener('click', () => {
+                subjectChips.forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                selectedSubject = chip.dataset.subject;
+                questionInput.disabled = false;
+                sendButton.disabled = false;
+                attachButton.disabled = false;
+                if (welcomeScreen) welcomeScreen.style.display = 'none';
+                addMessage('ai', `Great! I'm ready to help you with ${selectedSubject}.`);
+            });
+        });
+
+        attachButton.addEventListener('click', () => fileInput.click());
+
+        fileInput.addEventListener('change', e => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = event => {
+                    uploadedImage = file;
+                    uploadedImageBase64 = event.target.result.split(',')[1];
+                    imagePreview.src = event.target.result;
+                    imagePreviewContainer.classList.add('show');
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        removeImageBtn.addEventListener('click', () => {
+            uploadedImage = null;
+            uploadedImageBase64 = null;
+            imagePreviewContainer.classList.remove('show');
+            fileInput.value = '';
+        });
+
+        questionInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+        });
+
+        sendButton.addEventListener('click', sendMessage);
+        questionInput.addEventListener('keypress', e => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (!sendButton.disabled) sendMessage();
+            }
+        });
+
+        async function sendMessage() {
+            const question = questionInput.value.trim();
+            if (!question && !uploadedImage) return;
+            if (!selectedSubject) return alert('Please select a subject first!');
+
+            questionInput.disabled = true;
+            sendButton.disabled = true;
+            attachButton.disabled = true;
+
+            addMessage('user', question || 'Image uploaded', uploadedImage ? imagePreview.src : null);
+            questionInput.value = '';
+            questionInput.style.height = 'auto';
+
+            const tempImageBase64 = uploadedImageBase64;
+            const tempImageType = uploadedImage ? uploadedImage.type : null;
+            uploadedImage = null;
+            uploadedImageBase64 = null;
+            imagePreviewContainer.classList.remove('show');
+            fileInput.value = '';
+
+            addMessage('ai', '🤔 Thinking...');
+
+            try {
+                const response = await callGeminiAPI(question, tempImageBase64, tempImageType);
+                addMessage('ai', response);
+            } catch {
+                addMessage('ai', '❌ Error! Please try again.');
+            }
+
+            questionInput.disabled = false;
+            sendButton.disabled = false;
+            attachButton.disabled = false;
+        }
+
+        async function callGeminiAPI(question, imageBase64, imageType) {
+            let prompt = `You are an expert ${selectedSubject} teacher. Answer the following: "${question}"`;
+            const body = { contents: [{ parts: [] }] };
+            if (imageBase64)
+                body.contents[0].parts.push({ inline_data: { mime_type: imageType || 'image/jpeg', data: imageBase64 } });
+            body.contents[0].parts.push({ text: prompt });
+
+            const res = await fetch(`${API_ENDPOINT}?key=${API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            const data = await res.json();
+            return data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received.';
+        }
+
+        function addMessage(type, text, imageSrc = null) {
+            const msg = document.createElement('div');
+            msg.className = `message message-${type}`;
+            const avatar = document.createElement('div');
+            avatar.className = `avatar avatar-${type}`;
+            avatar.textContent = type === 'ai' ? '🤖' : '👤';
+            const bubble = document.createElement('div');
+            bubble.className = 'message-bubble';
+            bubble.innerHTML = text.replace(/\n/g, '<br>');
+            if (imageSrc && type === 'user') {
+                const img = document.createElement('img');
+                img.src = imageSrc;
+                img.className = 'message-image';
+                bubble.appendChild(img);
+            }
+            msg.appendChild(avatar);
+            msg.appendChild(bubble);
+            chatArea.appendChild(msg);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+    </script>
+</body>
+</html>

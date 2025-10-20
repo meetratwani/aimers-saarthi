@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBSE Grading System</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f8fa;
+            min-height: 100vh;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background-color: #fdeee4;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .logo .brand-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            z-index: 2;
+        }
+
+        .logo .wave {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            left: -50%;
+            border-radius: 40%;
+        }
+
+        .wave.top {
+            background-color: #4a7c59;
+            top: -50%;
+            animation: wave-top 5s infinite linear;
+        }
+
+        .wave.bottom {
+            background-color: #e67e22;
+            bottom: -50%;
+            animation: wave-bottom 5s infinite linear;
+        }
+
+        @keyframes wave-top {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes wave-bottom {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+
+        /* Gmail Status Bar */
+        .gmail-status-bar {
+            background: white;
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gmail-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.connected {
+            background-color: #27ae60;
+        }
+
+        .status-dot.disconnected {
+            background-color: #e74c3c;
+        }
+
+        .status-dot.checking {
+            background-color: #f39c12;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-text {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .connect-gmail-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .connect-gmail-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-page, .result-page {
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 26px;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .upload-section {
+            margin-top: 20px;
+        }
+
+        .upload-placeholder {
+            border: 2px dashed #27ae60;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            background: #f9f9f9;
+            transition: all 0.3s;
+        }
+
+        .upload-placeholder:hover {
+            background: #f3f9f3;
+        }
+
+        .upload-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            color: #27ae60;
+            font-weight: 500;
+        }
+
+        .upload-subtext {
+            color: #999;
+            font-size: 12px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .file-preview {
+            margin-top: 20px;
+            max-height: 200px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .file-info {
+            margin-top: 12px;
+            padding: 10px;
+            background: #f0f4ff;
+            border-left: 4px solid #27ae60;
+            border-radius: 10px;
+            font-size: 13px;
+        }
+
+        .btn-primary {
+            background-color: #212529;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            background-color: #343a40;
+            transform: translateY(-2px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .btn-secondary:hover {
+            background-color: #229954;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f0f0f0;
+            border-top: 4px solid #27ae60;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .result-card {
+            background: #f5f7fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .result-label {
+            color: #27ae60;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .result-value {
+            font-size: 15px;
+            color: #333;
+            word-break: break-word;
+        }
+
+        .marks-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .marks-value {
+            font-size: 40px;
+            font-weight: 700;
+            color: #27ae60;
+        }
+
+        .marks-label {
+            font-size: 13px;
+            color: #999;
+            font-weight: 500;
+        }
+
+        .feedback-box {
+            background: #fafafa;
+            border-left: 4px solid #27ae60;
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .feedback-title {
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .feedback-text {
+            font-size: 14px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .answer-box {
+            background: #fafafa;
+            border: 1px solid #eee;
+            padding: 16px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-height: 250px;
+            overflow-y: auto;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .answer-label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .status-badge {
+            background-color: #27ae60;
+            color: white;
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 15px;
+        }
+
+        .error-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .success-box {
+            background: #d4edda;
+            border: 1px solid #28a745;
+            color: #155724;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 12px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        .checkbox-group.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
+        @media (max-width: 600px) {
+            .form-row { grid-template-columns: 1fr; }
+            .question-page, .result-page { padding: 25px; }
+            .marks-display { flex-direction: column; gap: 12px; }
+            .page-header h1 { font-size: 22px; }
+            .gmail-status-bar { flex-direction: column; gap: 10px; }
+        }
+
+        .btn-back {
+            background: transparent;
+            border: none;
+            color: #27ae60;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            transition: color 0.2s ease, transform 0.2s ease;
+        }
+
+        .btn-back:hover {
+            color: #1e8449;
+            transform: translateX(-3px);
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="logo-container">
+            <div class="logo" id="homeBtn">
+                <div class="wave top"></div>
+                <div class="wave bottom"></div>
+                <span class="brand-name">aimers</span>
+            </div>
+        </div>
+
+        <!-- Gmail Status Bar -->
+        <div class="gmail-status-bar">
+            <div class="gmail-status">
+                <div class="status-dot checking" id="statusDot"></div>
+                <span class="status-text" id="statusText">Checking Gmail connection...</span>
+            </div>
+            <button class="connect-gmail-btn" id="connectGmailBtn" style="display:none;" onclick="openGmailConnection()">
+                🔗 Connect Gmail
+            </button>
+        </div>
+
+        <!-- Question Page -->
+<div class="page active" id="questionPage">
+    <div class="question-page">
+        <div class="page-header">
+            <button type="button" class="btn-back" id="backToHomeBtn">< Back</button>
+            <h1>📝 Submit Your Answer</h1>
+            <p>Upload your question and let AI grade it instantly</p>
+        </div>
+
+        <form id="gradeForm">
+            <div class="form-group">
+                <label for="question">Question *</label>
+                <textarea id="question" placeholder="Paste or type the question here..." required></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject" placeholder="e.g., English, Mathematics" value="General">
+                </div>
+                <div class="form-group">
+                    <label for="maxMarks">Maximum Marks</label>
+                    <input type="number" id="maxMarks" placeholder="10" value="10" min="1" max="100">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email (Optional)</label>
+                <input type="email" id="email" placeholder="your@email.com">
+            </div>
+
+            <div class="checkbox-group" id="emailCheckboxGroup">
+                <input type="checkbox" id="sendEmailCheckbox">
+                <label for="sendEmailCheckbox">📧 Send grading report to my email</label>
+            </div>
+            <div id="gmailWarning" class="warning-box" style="display:none;">
+                ⚠️ Gmail is not connected. Please connect Gmail to send email reports.
+            </div>
+
+            <div class="upload-section">
+                <label>Answer Image *</label>
+                <label for="imageUpload" class="upload-placeholder">
+                    <div class="upload-icon">📸</div>
+                    <div class="upload-text">Click to upload or drag and drop</div>
+                    <div class="upload-subtext">PNG, JPG, JPEG (Max 16MB)</div>
+                </label>
+                <input type="file" id="imageUpload" accept="image/png,image/jpeg,image/jpg" required>
+                <img id="preview" class="file-preview" style="display:none;">
+                <div id="fileInfo" class="file-info" style="display:none;"></div>
+            </div>
+
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <div id="loadingText">Processing your answer...</div>
+            </div>
+
+            <button type="submit" class="btn-primary" id="submitBtn">🚀 Submit & Grade</button>
+        </form>
+    </div>
+</div>
+
+<!-- Result Page -->
+<div class="page" id="resultPage">
+    <div class="result-page">
+        <div class="page-header">
+            <button type="button" class="btn-back" id="backToQuestionBtn">← Back</button>
+            <h1>✅ Grading Results</h1>
+            <p>Your answer has been evaluated.</p>
+        </div>
+        <div id="resultContent"></div>
+        <button type="button" class="btn-secondary" id="sendEmailBtn" style="display:none;">📧 Send Report to Email</button>
+        <button type="button" class="btn-primary" id="backBtn">← Grade Another</button>
+    </div>
+</div>
+
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        const API_URL = 'https://grading-ai-composio.onrender.com';
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDvmkf8lWYGhTZFIkoHfyS0rcOGtVSjIj0",
+            authDomain: "aimers-62228.firebaseapp.com",
+            projectId: "aimers-62228",
+            storageBucket: "aimers-62228.firebasestorage.app",
+            messagingSenderId: "931266152497",
+            appId: "1:931266152497:web:fb1fffedf934f5c79f6d10"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        const el = {
+            qPage: document.getElementById('questionPage'),
+            rPage: document.getElementById('resultPage'),
+            gradeForm: document.getElementById('gradeForm'),
+            img: document.getElementById('imageUpload'),
+            preview: document.getElementById('preview'),
+            fileInfo: document.getElementById('fileInfo'),
+            loading: document.getElementById('loading'),
+            loadingText: document.getElementById('loadingText'),
+            result: document.getElementById('resultContent'),
+            back: document.getElementById('backBtn'),
+            submitBtn: document.getElementById('submitBtn'),
+            homeBtn: document.getElementById('homeBtn'),
+            sendEmailBtn: document.getElementById('sendEmailBtn'),
+            emailCheckbox: document.getElementById('sendEmailCheckbox'),
+            statusDot: document.getElementById('statusDot'),
+            statusText: document.getElementById('statusText'),
+            connectGmailBtn: document.getElementById('connectGmailBtn'),
+            emailCheckboxGroup: document.getElementById('emailCheckboxGroup'),
+            gmailWarning: document.getElementById('gmailWarning')
+        };
+
+        let currentGradingData = null;
+        let userEmail = '';
+        let isGmailConnected = false;
+
+        // Check Gmail connection on load
+        window.addEventListener('load', () => {
+            console.log('Page loaded, checking Gmail connection...');
+            checkGmailConnection();
+        });
+
+        // Listen for Gmail connection messages from popup
+        window.addEventListener('message', (event) => {
+            if (event.data === 'gmail_connected') {
+                console.log('✅ Gmail connected via popup message');
+                setTimeout(() => {
+                    console.log('Re-checking Gmail connection after popup close...');
+                    checkGmailConnection();
+                }, 1500);
+            }
+        });
+
+        async function checkGmailConnection() {
+            try {
+                console.log('🔍 Checking Gmail connection status...');
+                const response = await fetch(`${API_URL}/check-gmail-connection`);
+                const data = await response.json();
+                
+                console.log('Gmail connection response:', data);
+                
+                isGmailConnected = data.gmail_connected;
+                
+                if (isGmailConnected) {
+                    el.statusDot.className = 'status-dot connected';
+                    el.statusText.textContent = '✅ Gmail Connected - Ready to send emails';
+                    el.connectGmailBtn.style.display = 'none';
+                    el.emailCheckboxGroup.classList.remove('disabled');
+                    el.gmailWarning.style.display = 'none';
+                    console.log('✅ Gmail is connected');
+                } else {
+                    el.statusDot.className = 'status-dot disconnected';
+                    el.statusText.textContent = '❌ Gmail Not Connected';
+                    el.connectGmailBtn.style.display = 'block';
+                    el.emailCheckboxGroup.classList.add('disabled');
+                    el.emailCheckbox.checked = false;
+                    console.log('❌ Gmail is NOT connected');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error checking Gmail connection:', error);
+                el.statusDot.className = 'status-dot disconnected';
+                el.statusText.textContent = '⚠️ Could not check Gmail status';
+            }
+        }
+
+        function openGmailConnection() {
+            const width = 800;
+            const height = 700;
+            const left = (screen.width / 2) - (width / 2);
+            const top = (screen.height / 2) - (height / 2);
+            
+            console.log('🔗 Opening Gmail connection popup...');
+            const popup = window.open(
+                `${API_URL}/connect-gmail`,
+                'Gmail Connection',
+                `width=${width},height=${height},left=${left},top=${top},toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=yes`
+            );
+
+            // Check if popup was blocked
+            if (!popup || popup.closed || typeof popup.closed === 'undefined') {
+                alert('Popup was blocked! Please allow popups for this site and try again.');
+                return;
+            }
+
+            // Start polling for connection status
+            console.log('⏳ Starting to poll for connection status...');
+            let pollCount = 0;
+            const maxPolls = 120; // Poll for up to 2 minutes (120 * 1 second)
+            
+            const pollTimer = setInterval(async () => {
+                pollCount++;
+                
+                // Check if popup is still open
+                if (popup.closed) {
+                    clearInterval(pollTimer);
+                    console.log('🔔 Popup closed by user');
+                    // Give it a moment then check connection
+                    setTimeout(() => checkGmailConnection(), 1000);
+                    return;
+                }
+                
+                // Stop polling after max attempts
+                if (pollCount >= maxPolls) {
+                    clearInterval(pollTimer);
+                    console.log('⏱️ Polling timeout reached');
+                    checkGmailConnection();
+                    return;
+                }
+                
+                // Poll the connection status every second
+                try {
+                    const response = await fetch(`${API_URL}/check-gmail-connection`);
+                    const data = await response.json();
+                    
+                    if (data.gmail_connected) {
+                        clearInterval(pollTimer);
+                        console.log('✅ Gmail connected! Closing popup...');
+                        popup.close();
+                        checkGmailConnection();
+                    }
+                } catch (error) {
+                    console.error('❌ Error polling connection:', error);
+                }
+            }, 1000); // Poll every second
+        }
+
+        // Check for authenticated user and get email from Firebase
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                database.ref('users/' + user.uid).once('value').then(snapshot => {
+                    const userData = snapshot.val();
+                    if (userData && userData.email) {
+                        userEmail = userData.email;
+                        document.getElementById('email').value = userEmail;
+                        console.log('✅ User email loaded from Firebase:', userEmail);
+                    } else if (user.email) {
+                        userEmail = user.email;
+                        document.getElementById('email').value = userEmail;
+                        console.log('✅ User email loaded from auth:', userEmail);
+                    }
+                });
+            } else {
+                console.log('ℹ️ No user logged in');
+            }
+        });
+
+        // Handle email checkbox changes
+        el.emailCheckbox.addEventListener('change', (e) => {
+            if (e.target.checked && !isGmailConnected) {
+                el.gmailWarning.style.display = 'block';
+                e.target.checked = false;
+                console.log('⚠️ Attempted to check email option but Gmail not connected');
+            } else {
+                el.gmailWarning.style.display = 'none';
+            }
+        });
+
+        // Home button - reload page
+        el.homeBtn.addEventListener('click', () => {
+            console.log('🏠 Home button clicked, reloading...');
+            location.reload();
+        });
+
+        // File preview
+        el.img.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    el.preview.src = e.target.result;
+                    el.preview.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+                el.fileInfo.textContent = `📄 ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`;
+                el.fileInfo.style.display = 'block';
+                console.log('📸 Image selected:', file.name);
+            }
+        });
+
+        // Form submission
+        el.gradeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const q = document.getElementById('question').value.trim();
+            const s = document.getElementById('subject').value.trim();
+            const m = parseInt(document.getElementById('maxMarks').value);
+            const email = document.getElementById('email').value.trim();
+            const sendEmail = el.emailCheckbox.checked;
+            const img = el.img.files[0];
+
+            console.log('📝 Form submitted');
+            console.log('  Question:', q.substring(0, 50) + '...');
+            console.log('  Subject:', s);
+            console.log('  Max Marks:', m);
+            console.log('  Email:', email);
+            console.log('  Send Email:', sendEmail);
+            console.log('  Image:', img ? img.name : 'None');
+
+            if (!q || !img) {
+                alert('Please provide question and image');
+                return;
+            }
+
+            // Validate email requirement if checkbox is checked
+            if (sendEmail && !email) {
+                alert('Please provide an email address to send the report');
+                return;
+            }
+
+            // Check Gmail connection if email is requested
+            if (sendEmail && !isGmailConnected) {
+                alert('Gmail is not connected. Please connect Gmail first or uncheck the email option.');
+                return;
+            }
+
+            el.loading.classList.add('active');
+            el.submitBtn.disabled = true;
+
+            try {
+                // Step 1: Submit question
+                el.loadingText.textContent = 'Submitting question...';
+                console.log('📤 Step 1: Submitting question...');
+                const qRes = await fetch(`${API_URL}/submit-question`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question: q, subject: s, max_marks: m })
+                });
+                
+                if (!qRes.ok) {
+                    const errorData = await qRes.json();
+                    throw new Error(errorData.message || 'Failed to submit question');
+                }
+                console.log('✅ Question submitted successfully');
+
+                // Step 2: Extract text from image
+                el.loadingText.textContent = 'Extracting text from image...';
+                console.log('📤 Step 2: Extracting text from image...');
+                const form = new FormData();
+                form.append('image', img);
+                const extract = await fetch(`${API_URL}/extract-text`, {
+                    method: 'POST',
+                    body: form
+                });
+
+                if (!extract.ok) {
+                    const errorData = await extract.json();
+                    console.error('❌ Extract error:', errorData);
+                    throw new Error(errorData.message || 'Failed to extract text from image');
+                }
+                const data = await extract.json();
+                console.log('✅ Text extracted successfully');
+                console.log('  Text length:', data.text.length);
+
+                // Step 3: Grade answer and optionally send email (full workflow)
+                if (sendEmail && email) {
+                    el.loadingText.textContent = 'Grading answer and sending email...';
+                    console.log('📤 Step 3: Running full workflow (grade + email)...');
+                    
+                    const workflow = await fetch(`${API_URL}/full-grading-workflow`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_email: email })
+                    });
+
+                    if (!workflow.ok) {
+                        const errorData = await workflow.json();
+                        if (errorData.action_required === 'connect_gmail') {
+                            throw new Error('Gmail not connected. Please connect Gmail first.');
+                        }
+                        throw new Error(errorData.message || 'Failed to complete workflow');
+                    }
+                    
+                    const g = await workflow.json();
+                    console.log('✅ Workflow completed successfully');
+                    console.log('  Email sent to:', email);
+                    
+                    currentGradingData = {
+                        grading: g,
+                        meta: { question: q, subject: s, maxMarks: m, extractedText: data.text },
+                        userEmail: email
+                    };
+
+                    showResult(g, { question: q, subject: s, maxMarks: m, extractedText: data.text }, true);
+                } else {
+                    // Just grade without email
+                    el.loadingText.textContent = 'Grading your answer...';
+                    console.log('📤 Step 3: Grading answer only...');
+                    
+                    const grade = await fetch(`${API_URL}/grade-answer`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ user_email: email || 'noemail@example.com' })
+                    });
+
+                    if (!grade.ok) {
+                        const errorData = await grade.json();
+                        throw new Error(errorData.message || 'Failed to grade answer');
+                    }
+                    const g = await grade.json();
+                    console.log('✅ Answer graded successfully');
+
+                    currentGradingData = {
+                        grading: g,
+                        meta: { question: q, subject: s, maxMarks: m, extractedText: data.text },
+                        userEmail: email || userEmail
+                    };
+
+                    showResult(g, { question: q, subject: s, maxMarks: m, extractedText: data.text }, false);
+                }
+
+            } catch (err) {
+                console.error('❌ Error during submission:', err);
+                alert('Error: ' + err.message);
+            } finally {
+                el.loading.classList.remove('active');
+                el.submitBtn.disabled = false;
+                el.loadingText.textContent = 'Processing your answer...';
+            }
+        });
+
+        // Send email function
+        async function sendGradingEmail(recipientEmail) {
+            try {
+                console.log('📧 Sending grading email to:', recipientEmail);
+                const response = await fetch(`${API_URL}/send-grading-email`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_email: recipientEmail })
+                });
+
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    if (result.action_required === 'connect_gmail') {
+                        throw new Error('Gmail not connected. Please connect Gmail first.');
+                    }
+                    throw new Error(result.message || 'Failed to send email');
+                }
+
+                console.log('✅ Email sent successfully:', result);
+                return result;
+            } catch (error) {
+                console.error('❌ Error sending email:', error);
+                throw error;
+            }
+        }
+
+        // Send email button click handler
+        el.sendEmailBtn.addEventListener('click', async () => {
+            if (!currentGradingData) {
+                alert('No grading data available');
+                return;
+            }
+
+            const email = currentGradingData.userEmail;
+            if (!email || email === 'noemail@example.com') {
+                alert('Please provide a valid email address');
+                return;
+            }
+
+            if (!isGmailConnected) {
+                alert('Gmail is not connected. Please connect Gmail first.');
+                openGmailConnection();
+                return;
+            }
+
+            el.sendEmailBtn.disabled = true;
+            el.sendEmailBtn.textContent = '📧 Sending...';
+
+            try {
+                await sendGradingEmail(email);
+                alert(`✅ Grading report sent successfully to ${email}`);
+                el.sendEmailBtn.textContent = '✅ Email Sent!';
+                setTimeout(() => {
+                    el.sendEmailBtn.style.display = 'none';
+                }, 2000);
+            } catch (error) {
+                alert('Failed to send email: ' + error.message);
+                el.sendEmailBtn.disabled = false;
+                el.sendEmailBtn.textContent = '📧 Send Report to Email';
+            }
+        });
+
+        // Back button
+        el.back.addEventListener('click', () => {
+            console.log('⬅️ Back button clicked');
+            showPage('questionPage');
+            el.gradeForm.reset();
+            el.preview.style.display = 'none';
+            el.fileInfo.style.display = 'none';
+            currentGradingData = null;
+            el.sendEmailBtn.style.display = 'none';
+            el.sendEmailBtn.disabled = false;
+            el.sendEmailBtn.textContent = '📧 Send Report to Email';
+        });
+
+        function showResult(g, meta, emailSent) {
+            const marks = g.grading?.marks_awarded || 0;
+            const max = g.grading?.max_marks || meta.maxMarks;
+            const feedback = g.grading?.feedback || 'No feedback available';
+            const percent = Math.round((marks / max) * 100);
+
+            console.log('📊 Showing results:');
+            console.log('  Marks:', marks + '/' + max);
+            console.log('  Percentage:', percent + '%');
+            console.log('  Email sent:', emailSent);
+
+            let emailStatusHTML = '';
+            if (emailSent) {
+                emailStatusHTML = `
+                    <div class="success-box">
+                        ✅ Answer graded successfully and email report sent to ${escapeHtml(currentGradingData?.userEmail || 'your email')}!
+                    </div>
+                `;
+            } else {
+                emailStatusHTML = `
+                    <div class="success-box">
+                        ✅ Answer graded successfully.
+                    </div>
+                `;
+                // Show send email button if email wasn't sent initially and Gmail is connected
+                if (isGmailConnected && currentGradingData?.userEmail && currentGradingData.userEmail !== 'noemail@example.com') {
+                    el.sendEmailBtn.style.display = 'block';
+                }
+            }
+
+            el.result.innerHTML = `
+                ${emailStatusHTML}
+                <div class="result-card">
+                    <div class="result-label">Question</div>
+                    <div class="result-value">${escapeHtml(meta.question)}</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Subject & Marks</div>
+                    <div class="result-value">${escapeHtml(meta.subject)} - ${max} marks</div>
+                </div>
+                <div class="marks-display">
+                    <div style="text-align: center; flex: 1;">
+                        <div class="marks-value">${marks}/${max}</div>
+                        <div class="marks-label">Marks Awarded</div>
+                    </div>
+                    <div style="text-align: center; flex: 1;">
+                        <div class="marks-value" style="color:#e67e22;">${percent}%</div>
+                        <div class="marks-label">Performance</div>
+                    </div>
+                </div>
+                <div class="feedback-box">
+                    <div class="feedback-title">📋 Feedback</div>
+                    <div class="feedback-text">${escapeHtml(feedback)}</div>
+                </div>
+                <div class="answer-box">
+                    <div class="answer-label">Extracted Answer Text:</div>
+                    <div>${escapeHtml(meta.extractedText)}</div>
+                </div>
+                <div class="status-badge">✓ Graded Successfully!</div>
+            `;
+            showPage('resultPage');
+        }
+
+        function showPage(p) {
+            console.log('📄 Showing page:', p);
+            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active'));
+            document.getElementById(p).classList.add('active');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        document.getElementById('backToHomeBtn').addEventListener('click', () => {
+            // Example: navigate to home or previous page
+            window.location.href = '/';
+        });
+
+        document.getElementById('backToQuestionBtn').addEventListener('click', () => {
+            document.getElementById('resultPage').classList.remove('active');
+            document.getElementById('questionPage').classList.add('active');
+        });
+
+
+    </script>
+</body>
+</html>

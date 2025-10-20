@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - Firebase Auth</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f7f8fa;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        /* Animated Logo */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            background-color: #fdeee4;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .logo .brand-name {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            z-index: 2;
+        }
+
+        .logo .wave {
+            position: absolute;
+            width: 200%;
+            height: 100%;
+            left: -50%;
+            border-radius: 40%;
+        }
+
+        .wave.top {
+            background-color: #4a7c59;
+            top: -50%;
+            animation: wave-top 5s infinite linear;
+        }
+
+        .wave.bottom {
+            background-color: #e67e22;
+            bottom: -50%;
+            animation: wave-bottom 5s infinite linear;
+        }
+
+        @keyframes wave-top {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes wave-bottom {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(-360deg); }
+        }
+
+        /* Headings */
+        h1 {
+            color: #2c3e50;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #555;
+            margin-bottom: 25px;
+            font-size: 14px;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #27ae60;
+        }
+
+        .password-requirements {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #212529;
+            color: white;
+            margin-top: 10px;
+            box-shadow: 0 4px 15px rgba(33, 37, 41, 0.2);
+        }
+
+        .btn-primary:hover {
+            background-color: #343a40;
+            transform: translateY(-2px);
+        }
+
+        .btn-google {
+            background: white;
+            color: #333;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-radius: 15px;
+            margin-top: 15px;
+            padding: 12px;
+        }
+
+        .btn-google:hover {
+            background: #f8f9fa;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #ddd;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 10px;
+            position: relative;
+            color: #666;
+            font-size: 14px;
+        }
+
+        /* Messages */
+        .error-message, .success-message {
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .error-message {
+            background: #fee;
+            color: #c33;
+        }
+
+        .success-message {
+            background: #efe;
+            color: #3c3;
+        }
+
+        /* Links */
+        .login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .login-link a {
+            color: #27ae60;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <div class="logo">
+                <div class="wave top"></div>
+                <div class="wave bottom"></div>
+                <span class="brand-name">aimers</span>
+            </div>
+        </div>
+
+        <h1>Create Account</h1>
+        <p class="subtitle">Sign up to get started</p>
+
+        <div id="error-message" class="error-message"></div>
+        <div id="success-message" class="success-message"></div>
+
+        <form id="signup-form">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" required placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required placeholder="Enter your email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" required placeholder="Create a password">
+                <div class="password-requirements">At least 6 characters</div>
+            </div>
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" required placeholder="Confirm your password">
+            </div>
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </form>
+
+        
+
+        <div class="login-link">
+            Already have an account? <a href="/">Login</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDvmkf8lWYGhTZFIkoHfyS0rcOGtVSjIj0",
+    authDomain: "aimers-62228.firebaseapp.com",
+    projectId: "aimers-62228",
+    storageBucket: "aimers-62228.firebasestorage.app",
+    messagingSenderId: "931266152497",
+    appId: "1:931266152497:web:fb1fffedf934f5c79f6d10"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const showError = (message) => {
+    const errorDiv = document.getElementById('error-message');
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+    setTimeout(() => errorDiv.style.display = 'none', 5000);
+};
+
+const showSuccess = (message) => {
+    const successDiv = document.getElementById('success-message');
+    successDiv.textContent = message;
+    successDiv.style.display = 'block';
+};
+
+// Save new user to Firestore
+const saveUserToFirestore = async (user, displayName) => {
+    try {
+        const userRef = doc(db, 'users', user.uid);
+        await setDoc(userRef, {
+            email: user.email,
+            uid: user.uid,
+            displayName: displayName,
+            photoURL: user.photoURL || '',
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
+        });
+        console.log('User saved to Firestore successfully');
+    } catch (error) {
+        console.error('Error saving user to Firestore:', error);
+        throw error;
+    }
+};
+
+const verifyToken = async (idToken) => {
+    try {
+        const response = await fetch('/verify-token', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken })
+        });
+        const data = await response.json();
+        if (data.status === 'success') {
+            showSuccess('Account created successfully! Redirecting...');
+            setTimeout(() => window.location.href = '/dashboard', 1000);
+        } else {
+            showError(data.message || 'Verification failed');
+        }
+    } catch (error) {
+        showError('An error occurred during verification');
+    }
+};
+
+document.getElementById('signup-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+
+    if (password !== confirmPassword) {
+        showError('Passwords do not match');
+        return;
+    }
+    if (password.length < 6) {
+        showError('Password must be at least 6 characters');
+        return;
+    }
+
+    try {
+        // Create user in Firebase Auth
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        
+        // Update display name in Auth
+        await updateProfile(userCredential.user, { displayName: name });
+        
+        // Save user to Firestore
+        await saveUserToFirestore(userCredential.user, name);
+        
+        // Get token and verify
+        const idToken = await userCredential.user.getIdToken();
+        await verifyToken(idToken);
+    } catch (error) {
+        let msg = 'Sign up failed';
+        if (error.code === 'auth/email-already-in-use') msg = 'Email already in use';
+        else if (error.code === 'auth/invalid-email') msg = 'Invalid email address';
+        else if (error.code === 'auth/weak-password') msg = 'Password is too weak';
+        showError(msg);
+    }
+});
+    </script>
+</body>
+</html>
