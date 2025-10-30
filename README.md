@@ -3,6 +3,10 @@
 An AI-powered automated grading system for CBSE Class answers with OCR capabilities, intelligent assessment, and email reporting.  
 
 🌐 **Website:** [Visit Aimers Saarthi](https://aimers-cx0o.onrender.com)
+## 🎥 Demo Video
+
+[![Watch the video](https://img.youtube.com/vi/FqKtqtlx24w/0.jpg)](https://youtu.be/FqKtqtlx24w)
+
 
 ## Features
 
